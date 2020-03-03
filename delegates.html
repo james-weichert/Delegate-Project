@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>2020 Delegate Counter</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+
+	<link rel="icon" type="image/png" href="DelegateLogo.png" />
+
+	<script type="text/javascript">
+
+
+		/*
+
+		OTHER SHIT TO DO:
+
+		– BULK ADD?
+		– HOVER - States!
+		– INTERACTIVE MAP
+		– SUPER DELEGATES?
+
+		*/
+		
+		var total_delegates = 3979;
+		var current_rem_delegates = total_delegates;
+
+		var candidates = ["biden", "sanders", "warren", "klobuchar", "bloomberg", "buttigieg", "steyer"];
+		var current_delegates = [54, 60, 8, 7, 0, 26, 0];
+
+
+		function startup() {
+
+			updatePage();
+		}
+
+		function updatePage() {
+
+			for (var i = 0; i < candidates.length; i++) {
+				candidateDelegates(candidates[i], current_delegates[i]);
+			}
+
+			updateTotals();
+
+		}
+
+		function updateTotals() {
+			current_rem_delegates = total_delegates - arraySum(current_delegates);
+
+			document.getElementById("tot_d").innerHTML = current_rem_delegates;
+
+			updateDistribution();
+		}
+
+		function candidateDelegates(candidate, dels) {
+
+			document.getElementById(candidate).childNodes[3].innerHTML = null;
+
+			var i = dels;
+
+			while (i > 0) {
+
+				var d = document.createElement("DIV");
+				d.className = "d";
+
+				document.getElementById(candidate).childNodes[3].appendChild(d);
+
+				i -= 1;
+			}
+
+			document.getElementById(candidate).childNodes[1].getElementsByClassName("num")[0].innerHTML = dels;
+
+		}
+
+		function addDelegate(elem) {
+
+			var c = elem.parentNode.parentNode.parentNode.id;
+			var i = findCandidateIndex(c);
+
+
+			current_delegates[i] += 1;
+
+			candidateDelegates(c, current_delegates[i]);
+
+			updateTotals();
+
+		}
+
+		function removeDelegate(elem) {
+
+			var c = elem.parentNode.parentNode.parentNode.id;
+			var i = findCandidateIndex(c);
+
+			current_delegates[i] -= 1;
+
+			removeOne(c, current_delegates[i]);
+
+			updateTotals();
+
+		}
+
+		function removeOne(candidate, d) {
+
+			var candidate_dels = document.getElementById(candidate).childNodes[3];
+
+			candidate_dels.removeChild(candidate_dels.lastChild);
+
+			document.getElementById(candidate).childNodes[1].getElementsByClassName("num")[0].innerHTML = d;
+
+		}
+
+		function arraySum(a) {
+			
+			var s = 0;
+
+			for (var i = 0; i < a.length; i++) {
+				s += a[i];
+			}
+
+			return s;
+
+		} 
+
+		function findCandidateIndex(c) {
+			
+			for (var i = 0; i < candidates.length; i++) {
+				if (candidates[i] == c) {
+					break;
+				}
+			}
+			return i;
+		}
+
+		function updateDistribution() {
+
+			for (var i = 0; i < candidates.length; i++) {
+				document.getElementById("d" + (i + 1).toString()).style.width = (100 * current_delegates[i] / total_delegates).toString() + "%";
+			}
+
+		}
+
+
+	</script>
+
+
+	<style type="text/css">
+		/*
+
+			BLUE - #5D8FC1
+			RED - #C15D5D
+
+			CANDIDATE COLORS
+
+			GREEN - #9AD17B
+			PINK - #F599F7
+			RED - #B73333
+			LIGHT BLUE - #7EBEC9
+			TEAL - #048A81
+			YELLOW - #FFC132
+			PURPLE - #480355
+		*/
+
+
+		body {
+			text-align: center;
+			font-family: 'Montserrat', sans-serif;
+			margin-left: 10vw;
+			margin-right: 10vw;
+
+			color: #444;
+
+			user-select: none;
+		}
+
+		fieldset {
+			border: 0.2em solid #CCC;
+			border-radius: 0.5em;
+		}
+
+		legend {
+			font-size: 1.5em;
+		}
+
+		.candidates {
+			text-align: left;
+
+			margin-left: 5%;
+			margin-right: 5%;
+		}
+
+		.under {
+			width: 100%;
+			height: 1em;
+			background-color: red;
+		}
+
+		
+		#biden .head {
+			color: #7EBEC9;
+		}
+		#biden .d, #d1 {
+			background-color: #7EBEC9;
+		}
+
+
+		#sanders .head {
+			color: #B73333;
+		}
+		#sanders .d, #d2 {
+			background-color: #B73333;
+		}
+
+
+		#warren .head {
+			color: #480355;
+		}
+		#warren .d, #d3 {
+			background-color: #480355;
+		}
+
+
+		#klobuchar .head {
+			color: #9AD17B;
+		}
+		#klobuchar .d, #d4 {
+			background-color: #9AD17B; 
+		}
+
+
+		#bloomberg .head {
+			color: #048A81;
+		}
+		#bloomberg .d, #d5 {
+			background-color: #048A81;
+		}
+
+
+		#buttigieg .head {
+			color: #FFC132;	
+		}
+		#buttigieg .d, #d6 {
+			background-color: #FFC132;
+		}
+
+		#steyer .head {
+			color: #F599F7;
+		}
+		#steyer .d, #d7 {
+			background-color: #F599F7;
+		}
+
+
+
+		.delegates {
+			width: 80%;
+			margin-left: auto;
+			margin-right: auto;
+
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+		}
+
+		.d {
+			width: 1em;
+			height: 1em;
+
+			margin-left: 0.2em;
+			margin-right: 0.2em;
+			margin-top: 0.2em;
+			margin-bottom: 0.2em;
+
+			border-radius: 50%;
+		}
+
+		.count {
+			color: #444;
+		}
+
+
+		#party {
+			color: #5D8FC1;
+			text-decoration: underline;
+		}
+
+		.plus, .minus {
+			cursor: pointer;
+		}
+
+		#distribution {
+			width: 80%;
+			
+			margin-top: 5vh;
+
+			margin-left: auto;
+			margin-right: auto;
+
+			border-radius: 0.3em;
+			overflow: hidden;
+
+
+			height: 5vh;
+
+			display: flex;
+
+			background-color: #BBB;
+		}
+
+		#distribution div {
+			height: 100%;
+		}
+
+
+	</style>
+</head>
+<body onload="startup()">
+	<br />
+	<h1>2020 <span id="party">Democratic</span> Primary Delegate Counter</h1>
+	<br />
+	<fieldset>
+		<legend><strong>Dem</strong></legend>
+
+		<div id="distribution">
+			<div id="d1"></div>
+			<div id="d2"></div>
+			<div id="d3"></div>
+			<div id="d4"></div>
+			<div id="d5"></div>
+			<div id="d6"></div>
+			<div id="d7"></div>
+		</div>
+		<div id="total_delegates">
+			<h3>Total Remaining (Pledged) Delegates: <span id="tot_d">0</span></h3>
+		</div>
+
+		<div class="candidates">
+			
+			<div class="c" id="biden">
+				<div class="head">
+					<h3>Joe Biden</h3>
+					<h3 class="count"><span class="num">0</span>
+						&nbsp;&nbsp;&nbsp;
+						<span class="minus" onclick="removeDelegate(this)">–</span>&nbsp;&nbsp;<span class="plus" onclick="addDelegate(this)">+</span></h3>
+				</div>
+				<div class="delegates">
+					
+				</div>
+			</div>
+
+			<div class="c" id="sanders">
+				<div class="head">
+					<h3>Bernie Sanders</h3>
+					<h3 class="count"><span class="num">0</span>
+						&nbsp;&nbsp;&nbsp;
+						<span class="minus" onclick="removeDelegate(this)">–</span>&nbsp;&nbsp;<span class="plus" onclick="addDelegate(this)">+</span></h3>
+				</div>
+				<div class="delegates">
+					
+				</div>
+			</div>
+
+			<div class="c" id="warren">
+				<div class="head">
+					<h3>Elizabeth Warren</h3>
+					<h3 class="count"><span class="num">0</span>
+						&nbsp;&nbsp;&nbsp;
+						<span class="minus" onclick="removeDelegate(this)">–</span>&nbsp;&nbsp;<span class="plus" onclick="addDelegate(this)">+</span></h3>
+				</div>
+				<div class="delegates">
+					
+				</div>
+			</div>
+
+			<div class="c" id="klobuchar">
+				<div class="head">
+					<h3>Amy Klobuchar</h3>
+					<h3 class="count"><span class="num">0</span>
+						&nbsp;&nbsp;&nbsp;
+						<span class="minus" onclick="removeDelegate(this)">–</span>&nbsp;&nbsp;<span class="plus" onclick="addDelegate(this)">+</span></h3>
+				</div>
+				<div class="delegates">
+					
+				</div>
+			</div>
+
+			<div class="c" id="bloomberg">
+				<div class="head">
+					<h3>Mike Bloomberg</h3>
+					<h3 class="count"><span class="num">0</span>
+						&nbsp;&nbsp;&nbsp;
+						<span class="minus" onclick="removeDelegate(this)">–</span>&nbsp;&nbsp;<span class="plus" onclick="addDelegate(this)">+</span></h3>
+				</div>
+				<div class="delegates">
+					
+				</div>
+			</div>
+
+			<div class="c" id="buttigieg">
+				<div class="head">
+					<h3>Pete Buttigieg</h3>
+					<h3 class="count"><span class="num">0</span>
+						&nbsp;&nbsp;&nbsp;
+						<span class="minus" onclick="removeDelegate(this)">–</span>&nbsp;&nbsp;<span class="plus" onclick="addDelegate(this)">+</span></h3>
+				</div>
+				<div class="delegates">
+					
+				</div>
+			</div>
+
+			<div class="c" id="steyer">
+				<div class="head">
+					<h3>Tom Steyer</h3>
+					<h3 class="count"><span class="num">0</span>
+						&nbsp;&nbsp;&nbsp;
+						<span class="minus" onclick="removeDelegate(this)">–</span>&nbsp;&nbsp;<span class="plus" onclick="addDelegate(this)">+</span></h3>
+				</div>
+				<div class="delegates">
+					
+				</div>
+			</div>
+
+			<br />
+		</div>
+
+	</fieldset>
+
+	<br />
+	<br />
+
+	<div class="footer">
+		<p>Project by James Weichert. All Rights Reserved.</p>
+	</div>
+
+	<br />
+
+</body>
+</html>
